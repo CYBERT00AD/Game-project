@@ -16,7 +16,11 @@ public class CameraMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //GameObject[] targets = GameObject.FindGameObjectsWithTag("Target");
+        //GameObject Target = targets[0];
         transform.position = PlayerObj.transform.position + pos;
+        transform.LookAt(PlayerObj.transform.position);
+        //transform.LookAt(Target.transform.position);
 
     }
 }
