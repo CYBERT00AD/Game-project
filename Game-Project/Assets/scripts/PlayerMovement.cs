@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class movement : MonoBehaviour
 {
     // Start is called before the first frame update
     public float speed;
     public float Drag;
+    public float Height;
     private Vector3 force;
     private Vector3 velocity;
     private Rigidbody rb;
@@ -15,9 +17,25 @@ public class movement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.useGravity = false;
+        rb.useGravity = true;
     }
     private void FixedUpdate()
+    {
+        UpdateForce();
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+        //UpdateVelocity();
+        //UpdatePosition();
+
+       
+    }
+
+    private void UpdateForce()
     {
         if (Input.GetKey(KeyCode.W))
         {
@@ -34,47 +52,35 @@ public class movement : MonoBehaviour
         if (Input.GetKey(KeyCode.D))
         {
             force.z -= speed;
-            //rb.AddForce(force);
-        }
-        if (rb.GetAccumulatedForce().y < 0)
-        {
-            //force.y += -rb.GetAccumulatedForce().y * 2;
         }
 
-
-
-
-        //Vector3 dragForce = Vector3.Scale(vel, 1,0);
-        //rb.velocity = new Vector3 (vel.x*0.9f, vel.y * 0.9f, vel.z * 0.9f);
-        //rb.drag = 20;
+        
         //Dragging force
-        Vector3 vel = rb.velocity; // rb.GetPointVelocity(new Vector3 (0, 0, 0));
+        Vector3 vel = rb.velocity;
+        force += -1 * vel * Drag;
 
-        Debug.Log("applied force: "+ ((Vector3) force - rb.GetAccumulatedForce()));
-        Debug.Log("Velocity: " + vel);
-        //Debug.Log("Drag force: "+ -1 * vel * Drag);
+        //levitation force
+        //Vector3(0, -1, 0)
+        RaycastHit hit;
+        
+        if(Physics.Raycast(transform.position, Vector3.down, out hit))
+        {
+            if (hit.distance < Height )
+            {
+                force.y = 50 * (Height - hit.distance);
+
+            }
+
+        }
+
+        
 
         //Movement force
         rb.AddForce(force);
-        //rb.AddForce(force);
-        //rb.AddForce(-1*vel * Drag);
+
+
 
         force *= 0;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        UpdateForce();
-        //UpdateVelocity();
-        //UpdatePosition();
-
-       
-    }
-
-    private void UpdateForce()
-    {
-        
 
     }
     private void UpdateVelocity()
