@@ -15,6 +15,7 @@ public class ProjectileMovement : MonoBehaviour
     private Collider ProjectileCollider;
     private Collider TargetCollider;
     
+    
 
     void Start()
     {
@@ -29,19 +30,22 @@ public class ProjectileMovement : MonoBehaviour
                 Target = targets[i];
             }
         }
-        ProjectileCollider = this.GetComponent<Collider>();  
+        ProjectileCollider = this.GetComponent<Collider>();
+        //float BornTime = Time.time;
 
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         Move();
 
         CheckTouch();
 
+
         if(life == false)
         {
+            
             Destroy(this);
         }
     }
@@ -72,6 +76,7 @@ public class ProjectileMovement : MonoBehaviour
         if (ProjectileCollider.gameObject.tag == "Target")
             {
             Debug.Log("triggerd");
+            
             //Destroy(this.gameObject);
         }
 
@@ -81,7 +86,11 @@ public class ProjectileMovement : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {                
         if (other.gameObject.tag == "Target")
+
         {
+            Target.transform.position = new Vector3(0,0,0);
+            //Target.health.ToDamage(10.0f);
+            Target.GetComponent<Target>().health.ToDamage(10);
             Destroy(this.gameObject);
         }        
     }
